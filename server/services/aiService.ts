@@ -12,6 +12,7 @@ export interface ChatCompletionRequest {
   temperature?: number;
   maxTokens?: number;
   provider?: 'gemini' | 'huggingface';
+  apiKey?: string;
 }
 
 export interface ChatCompletionResponse {
@@ -62,6 +63,22 @@ export class AIService {
       const model = request.model || "gemini-2.5-flash";
       const temperature = request.temperature || 0.7;
       
+      // Use provided API key or fall back to environment variable
+      const apiKey = request.apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || "";
+      
+      console.log("AI Service - API key check:", {
+        provided: !!request.apiKey,
+        envKey: !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY),
+        hasKey: !!apiKey
+      });
+      
+      if (!apiKey) {
+        throw new Error("No API key provided. Please add your Gemini API key in settings.");
+      }
+      
+      // Create a new AI instance with the provided API key
+      const aiInstance = new GoogleGenAI({ apiKey });
+      
       // Build conversation history
       let conversation = "";
       if (request.sessionHistory && request.sessionHistory.length > 0) {
@@ -72,7 +89,7 @@ export class AIService {
       
       const prompt = conversation + `Human: ${request.message}\nAssistant:`;
 
-      const response = await ai.models.generateContent({
+      const response = await aiInstance.models.generateContent({
         model,
         contents: [{
           role: "user",
@@ -120,11 +137,20 @@ export class AIService {
     }
   }
 
-  async generateTitle(firstMessage: string): Promise<string> {
+  async generateTitle(firstMessage: string, apiKey?: string): Promise<string> {
     try {
       const prompt = `Generate a short, descriptive title (maximum 6 words) for a conversation that starts with: "${firstMessage}". Only return the title, nothing else.`;
       
-      const response = await ai.models.generateContent({
+      // Use provided API key or fall back to environment variable
+      const key = apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || "";
+      
+      if (!key) {
+        return "New Conversation";
+      }
+      
+      const aiInstance = new GoogleGenAI({ apiKey: key });
+      
+      const response = await aiInstance.models.generateContent({
         model: "gemini-2.5-flash",
         contents: [{
           role: "user",

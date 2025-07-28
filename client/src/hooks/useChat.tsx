@@ -10,6 +10,7 @@ const DEFAULT_SETTINGS: ChatSettings = {
   autoScroll: true,
   soundNotifications: false,
   sendOnEnter: true,
+  apiKey: "",
 };
 
 export function useChat() {
@@ -33,6 +34,7 @@ export function useChat() {
 
   // Save settings to localStorage
   useEffect(() => {
+    console.log("Saving settings to localStorage:", settings);
     localStorage.setItem("chatSettings", JSON.stringify(settings));
   }, [settings]);
 
@@ -119,12 +121,14 @@ export function useChat() {
     }));
 
     try {
+      console.log("Sending message with API key:", settings.apiKey ? "Present" : "Missing");
       const response = await apiRequest("POST", `/api/sessions/${session.id}/messages`, {
         content: content.trim(),
         role: "user",
         model: settings.model,
         temperature: settings.temperature,
         maxTokens: settings.maxTokens,
+        apiKey: settings.apiKey,
       });
 
       const data = await response.json();
@@ -151,6 +155,7 @@ export function useChat() {
         try {
           await apiRequest("POST", `/api/sessions/${session.id}/generate-title`, {
             firstMessage: content.trim(),
+            apiKey: settings.apiKey,
           });
         } catch (titleError) {
           console.warn("Failed to generate title:", titleError);
@@ -214,6 +219,7 @@ export function useChat() {
 
   // Update settings
   const updateSettings = useCallback((newSettings: Partial<ChatSettings>) => {
+    console.log("Updating settings:", newSettings);
     setSettings(prev => ({ ...prev, ...newSettings }));
   }, []);
 

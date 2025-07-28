@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,15 +25,19 @@ const AI_PROVIDERS = [
 
 export function SettingsModal({ open, onOpenChange, settings, onSaveSettings }: Props) {
   const [localSettings, setLocalSettings] = useState<ChatSettings>(settings);
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState(settings.apiKey || "");
+
+  // Update local state when settings change
+  useEffect(() => {
+    setLocalSettings(settings);
+    setApiKey(settings.apiKey || "");
+  }, [settings]);
 
   const handleSave = () => {
-    onSaveSettings(localSettings);
+    console.log("Saving settings with API key:", apiKey ? "Present" : "Missing");
+    const updatedSettings = { ...localSettings, apiKey };
+    onSaveSettings(updatedSettings);
     onOpenChange(false);
-    // Note: API key handling would be implemented based on security requirements
-    if (apiKey) {
-      console.log("API key would be saved securely");
-    }
   };
 
   const updateSetting = <K extends keyof ChatSettings>(

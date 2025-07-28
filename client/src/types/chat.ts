@@ -40,4 +40,5 @@ export interface ChatSettings {
   autoScroll: boolean;
   soundNotifications: boolean;
   sendOnEnter: boolean;
+  apiKey?: string;
 }

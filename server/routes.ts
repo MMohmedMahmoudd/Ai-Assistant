@@ -98,6 +98,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }));
 
       try {
+        console.log("Received API key:", req.body.apiKey ? "Present" : "Missing");
         // Generate AI response
         const aiResponse = await aiService.generateChatCompletion({
           message: messageData.content,
@@ -105,6 +106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           model: req.body.model || "gemini-2.5-flash",
           temperature: req.body.temperature || 0.7,
           maxTokens: req.body.maxTokens || 1024,
+          apiKey: req.body.apiKey,
         });
 
         // Create AI message
@@ -163,6 +165,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         model: model || "gemini-2.5-flash",
         temperature: temperature || 0.7,
         maxTokens: maxTokens || 1024,
+        apiKey: req.body.apiKey,
       });
 
       res.json(response);
@@ -183,7 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "First message is required" });
       }
 
-      const title = await aiService.generateTitle(firstMessage);
+      const title = await aiService.generateTitle(firstMessage, req.body.apiKey);
       const updatedSession = await storage.updateChatSession(req.params.id, { title });
 
       if (!updatedSession) {
