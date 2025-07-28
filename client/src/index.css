@@ -99,9 +99,60 @@
     animation: pulseSoft 2s infinite;
   }
   
+  /* Enhanced header styles */
+  .header-gradient-border {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  }
+  
+  .dark .header-gradient-border {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(147, 51, 234, 0.05));
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+  }
+  
+  .logo-glow {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  
+  .dark .logo-glow {
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+  }
+  
+  .model-selector-glow {
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .model-selector-glow:hover {
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+    transform: translateY(-1px);
+  }
+  
+  .dark .model-selector-glow {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .dark .model-selector-glow:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Enhanced button animations */
+  .icon-button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .icon-button:hover {
+    transform: scale(1.05);
+  }
+  
+  .icon-button:active {
+    transform: scale(0.95);
+  }
+  
   /* Smooth theme transitions */
   * {
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   }
 }
 
